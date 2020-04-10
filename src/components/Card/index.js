@@ -19,7 +19,7 @@ function Card({
   onCleanFilters,
   onSetFindVehicle,
 }) {
-  const [typeCheckbox, setTypeCheckbox] = useState({ Novos: false, Usados: true });
+  const [typeCheckbox, setTypeCheckbox] = useState({ Novos: false, Usados: false });
 
   useEffect(() => {
     async function loadVehicles() {
@@ -43,10 +43,10 @@ function Card({
   function handleChangeType(type) {
     switch (type) {
       case 'usados':
-        setTypeCheckbox({ Novos: false, Usados: true });
+        setTypeCheckbox({ ...typeCheckbox, Usados: !typeCheckbox.Usados });
         break;
       case 'novos':
-        setTypeCheckbox({ Novos: true, Usados: false });
+        setTypeCheckbox({ ...typeCheckbox, Novos: !typeCheckbox.Novos });
         onSetFindVehicle({ ...listFind, KM: 0 });
         break;
       default:
@@ -82,6 +82,11 @@ function Card({
     const uniqueVehicles = Array.from(new Set(filterVehicles));
 
     onSetVehiclesResult(uniqueVehicles);
+  }
+
+  function handleCleanFilters() {
+    setTypeCheckbox({ Novos: false, Usados: false });
+    onCleanFilters();
   }
 
   return (
@@ -162,7 +167,7 @@ function Card({
             </span>
 
             <div>
-              <span className="cleanFilter" onClick={() => onCleanFilters()}>
+              <span className="cleanFilter" onClick={() => handleCleanFilters()}>
                 Limpar Filtros
               </span>
               <span className="buttonSearch" onClick={() => handleSearchVehicles()}>
